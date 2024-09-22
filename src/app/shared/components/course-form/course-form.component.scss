@@ -1,7 +1,7 @@
-@import 'src/app/shared/styles/styles';
+@import "src/app/shared/styles/styles";
 
 .course {
- min-width: 60vw;
+  min-width: 60vw;
 
   &__flex {
     display: flex;
@@ -35,3 +35,11 @@
     cursor: pointer;
   }
 }
+input.error,
+textarea.error {
+  border-color: red;
+}
+// input.ng-invalid.ng-touched,
+// .form-submitted input.ng-invalid {
+//   border-color: red;
+// }

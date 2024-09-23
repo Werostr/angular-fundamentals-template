@@ -12,6 +12,11 @@
       flex: 1;
     }
 
+    & input.error,
+    textarea.error {
+      border-color: red;
+    }
+
     & app-button {
       margin-left: 16px;
     }
@@ -24,6 +29,8 @@
   &__authors {
     margin-top: 8px;
     display: flex;
+    flex-direction: column;
+    flex-grow: 1;
 
     &-item {
       margin-right: 10px;
@@ -35,10 +42,23 @@
     cursor: pointer;
   }
 }
-input.error,
-textarea.error {
-  border-color: red;
+
+.all-authors {
+  display: flex;
+  gap: 20px;
 }
+
+.authors {
+  flex-grow: 2;
+}
+
+.authors__list {
+  display: flex;
+  flex-direction: column;
+  width: 30%;
+  gap: 10px;
+}
+
 // input.ng-invalid.ng-touched,
 // .form-submitted input.ng-invalid {
 //   border-color: red;

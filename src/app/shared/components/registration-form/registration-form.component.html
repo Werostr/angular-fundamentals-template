@@ -80,6 +80,7 @@
             id="password"
             placeholder="Input text"
             formControlName="password"
+            togglePassword
             required
             [ngClass]="{
               error:
@@ -105,7 +106,8 @@
         <app-button [buttonText]="'register'" (click)="onSubmit()"></app-button>
       </div>
       <div class="form__text">
-        If you have an account you may <strong>Login</strong>
+        If you have an account you may
+        <a routerLink="/login"><strong>Login</strong></a>
       </div>
     </div>
   </form>

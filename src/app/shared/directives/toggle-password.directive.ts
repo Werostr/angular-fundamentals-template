@@ -1,7 +1,4 @@
 import { Directive, ElementRef } from "@angular/core";
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import { FaIconLibrary } from "@fortawesome/angular-fontawesome";
 
 @Directive({
   selector: "[togglePassword]",
@@ -10,9 +7,8 @@ export class TogglePasswordDirective {
   private visible: boolean = true;
   private icon: HTMLElement;
 
-  constructor(private el: ElementRef, library: FaIconLibrary) {
-    library.addIcons(faEye, faEyeSlash);
-    const parent = this.el.nativeElement.parentElement;
+  constructor(private el: ElementRef) {
+    const parent = this.el.nativeElement.parentNode;
     this.icon = document.createElement("span");
     this.icon.innerHTML = "show";
     parent.appendChild(this.icon);

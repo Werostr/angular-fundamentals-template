@@ -36,13 +36,13 @@ export class CourseFormComponent {
       description: ["", [Validators.required, Validators.minLength(2)]],
       author: this.fb.group({
         name: [
-          undefined,
+          null,
           [Validators.minLength(2), Validators.pattern(/^[a-zA-Z0-9]*$/)],
         ],
       }),
       authors: this.fb.array([]),
       duration: [
-        undefined,
+        null,
         [
           Validators.required,
           (minutes: AbstractControl) =>

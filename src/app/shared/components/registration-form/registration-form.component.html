@@ -75,19 +75,27 @@
         <div class="form__control">
           <!--Use the name `password` for the form control.-->
           <label for="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            placeholder="Input text"
-            formControlName="password"
-            togglePassword
-            required
-            [ngClass]="{
-              error:
-                registrationForm.controls['password'].invalid &&
-                (submitted || registrationForm.controls['password'].touched)
-            }"
-          />
+          <div class="input-container">
+            <input
+              type="password"
+              id="password"
+              placeholder="Input text"
+              formControlName="password"
+              togglePassword
+              #togglePassword="togglePassword"
+              required
+              [ngClass]="{
+                error:
+                  registrationForm.controls['password'].invalid &&
+                  (submitted || registrationForm.controls['password'].touched)
+              }"
+            />
+            <fa-icon
+              class="toggle-icon"
+              (click)="togglePassword.toggle()"
+              [icon]="togglePassword.visible ? 'eye' : 'eye-slash'"
+            ></fa-icon>
+          </div>
           <span
             id="passwordErrorMessage"
             class="text-danger"

@@ -1,1 +1,14 @@
-<p>courses works!</p>
+<div *ngIf="coursesList$ | async as courses; else noCourses">
+  <app-courses-list [courses]="courses"></app-courses-list>
+  <p>{{ courses[0].id }}</p>
+</div>
+<ng-template #noCourses>
+  <app-info
+    title="your list is empty"
+    text="Please use `Add New Course` button to add your first course"
+    ><app-button
+      (click)="redirectToAddCourse()"
+      buttonText="add new course"
+    ></app-button
+  ></app-info>
+</ng-template>

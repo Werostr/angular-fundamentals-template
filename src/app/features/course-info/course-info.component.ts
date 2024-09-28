@@ -8,5 +8,5 @@ import { Course } from "@app/models/course.model";
 })
 export class CourseInfoComponent {
   // Use the names for the input `course`.
-  @Input() course!: Course;
+  @Input() course!: any; // TODO: Change the type to Course
 }

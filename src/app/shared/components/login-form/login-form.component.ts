@@ -1,5 +1,7 @@
 import { Component, ViewChild } from "@angular/core";
-import { NgForm, NgModel } from "@angular/forms";
+import { NgForm } from "@angular/forms";
+import { AuthService } from "@app/auth/services/auth.service";
+import { UserStoreService } from "@app/user/services/user-store.service";
 
 @Component({
   selector: "app-login-form",
@@ -9,15 +11,22 @@ import { NgForm, NgModel } from "@angular/forms";
 export class LoginFormComponent {
   @ViewChild("loginForm") public loginForm!: NgForm;
   //Use the names `email` and `password` for form controls.
-  // @ViewChild("email") public email!: NgModel;
-  // @ViewChild("password") public password!: NgModel;
   email: string = "";
   password: string = "";
 
-  onSubmit(): void {
+  constructor(
+    private authService: AuthService,
+    private userStoreService: UserStoreService
+  ) {}
+
+  onLogin(): void {
     if (this.loginForm.valid) {
       console.log(this.loginForm.value);
+      this.authService.login(this.loginForm.value);
+      this.userStoreService.getUser();
       this.loginForm.reset();
+    } else {
+      console.log("Invalid form");
     }
   }
 }

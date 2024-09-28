@@ -6,3 +6,11 @@ export interface Course {
   duration: number;
   authors: string[];
 }
+
+export interface CourseCreate {
+  title: string;
+  description: string;
+  creationDate: Date;
+  duration: number;
+  authors: string[];
+}

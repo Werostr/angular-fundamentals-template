@@ -1,4 +1,7 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
+import { AuthService } from "./auth/services/auth.service";
+import { Router } from "@angular/router";
+import { UserStoreService } from "./user/services/user-store.service";
 
 @Component({
   selector: "app-root",
@@ -7,4 +10,20 @@ import { Component } from "@angular/core";
 })
 export class AppComponent {
   title = "courses-app";
+
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private userStoreService: UserStoreService
+  ) {}
+
+  // ngOnInit(): void {
+  //   this.userStoreService.getUser();
+  // }
+
+  onLogout(): void {
+    this.authService.logout();
+    this.router.navigate(["/login"]);
+    console.log("Logout");
+  }
 }

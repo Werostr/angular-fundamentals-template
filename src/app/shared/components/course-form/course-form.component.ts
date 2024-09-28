@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import {
   AbstractControl,
   FormArray,
@@ -10,27 +10,44 @@ import { FaIconLibrary } from "@fortawesome/angular-fontawesome";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { v4 as uuidv4 } from "uuid";
 import { Author } from "../../../models/author.model";
+import { ActivatedRoute, Router } from "@angular/router";
+import { UserStoreService } from "@app/user/services/user-store.service";
+import { CoursesStoreService } from "@app/services/courses-store.service";
+import { first } from "rxjs";
 
 @Component({
   selector: "app-course-form",
   templateUrl: "./course-form.component.html",
   styleUrls: ["./course-form.component.scss"],
 })
-export class CourseFormComponent {
-  constructor(public fb: FormBuilder, public library: FaIconLibrary) {
-    library.addIconPacks(fas);
-    this.buildForm();
-  }
-
+export class CourseFormComponent implements OnInit {
+  id: string | undefined;
+  isAddMode!: boolean;
   courseForm!: FormGroup;
   submitted: boolean = false;
   initialAuthors: Author[] = [
+    //TODO: static?
     { id: uuidv4(), name: "Author One" },
     { id: uuidv4(), name: "Author Two" },
   ];
   authorsList: Author[] = [...this.initialAuthors];
-  // Use the names `title`, `description`, `author`, 'authors' (for authors list), `duration` for the form controls.
-  buildForm(): void {
+
+  constructor(
+    public fb: FormBuilder,
+    public library: FaIconLibrary,
+    private route: ActivatedRoute,
+    private router: Router,
+    private coursesStoreService: CoursesStoreService
+  ) {
+    library.addIconPacks(fas);
+  }
+
+  ngOnInit(): void {
+    this.id = this.route.snapshot.params["id"];
+    this.isAddMode = !this.id;
+    console.log(this.id);
+    console.log(this.isAddMode);
+
     this.courseForm = this.fb.group({
       title: ["", [Validators.required, Validators.minLength(2)]],
       description: ["", [Validators.required, Validators.minLength(2)]],
@@ -50,7 +67,15 @@ export class CourseFormComponent {
         ],
       ],
     });
+
+    if (this.id) {
+      this.coursesStoreService
+        .getCourse(this.id)
+        .subscribe((item) => this.courseForm.patchValue(item));
+    }
   }
+
+  // Use the names `title`, `description`, `author`, 'authors' (for authors list), `duration` for the form controls.
 
   get courseAuthors(): FormArray {
     return this.courseForm.get("authors") as FormArray;
@@ -82,6 +107,14 @@ export class CourseFormComponent {
     if (this.courseForm.valid) {
       console.log(this.courseForm.value);
       this.submitted = false;
+      if (this.isAddMode) {
+        this.coursesStoreService.createCourse(this.courseForm.value);
+      } else {
+        this.coursesStoreService.editCourse(
+          this.id as string,
+          this.courseForm.value
+        );
+      }
       this.courseForm.reset();
     }
   }

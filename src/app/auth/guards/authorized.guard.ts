@@ -22,10 +22,11 @@ export class AuthorizedGuard implements CanLoad {
 
     return this.authService.isAuthorized$.pipe(
       map((isAuthorized) => {
-        if (!isAuthorized) {
+        if (isAuthorized) {
+          return true;
+        } else {
           return this.router.createUrlTree(["/login"]);
         }
-        return true;
       })
     );
   }

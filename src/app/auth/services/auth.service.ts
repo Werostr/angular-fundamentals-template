@@ -18,9 +18,7 @@ export class AuthService {
     private sessionStorageService: SessionStorageService,
     private router: Router,
     private userStoreService: UserStoreService
-  ) {
-    this.isAuthorized$$.next(!!this.sessionStorageService.getToken());
-  }
+  ) {}
 
   login(user: UserLogin): void {
     // replace 'any' with the required interface

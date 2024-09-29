@@ -39,7 +39,7 @@ export class CoursesService {
 
   filterCourses(value: string): Observable<any> {
     // Add your code here
-    return this.http.get(`${this.baseUrl}/courses/filter?value=${value}`, {});
+    return this.http.get(`${this.baseUrl}/courses/filter?value=${value}`);
   }
 
   getAllAuthors(): Observable<any> {

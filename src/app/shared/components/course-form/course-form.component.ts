@@ -69,9 +69,9 @@ export class CourseFormComponent implements OnInit {
     });
 
     if (this.id) {
-      this.coursesStoreService
-        .getCourse(this.id)
-        .subscribe((item) => this.courseForm.patchValue(item));
+      this.coursesStoreService.getCourse(this.id).subscribe((course) => {
+        console.log(course), this.courseForm.patchValue(course);
+      });
     }
   }
 

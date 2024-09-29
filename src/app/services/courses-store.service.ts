@@ -1,5 +1,12 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, map, Observable, tap } from "rxjs";
+import {
+  BehaviorSubject,
+  forkJoin,
+  map,
+  Observable,
+  switchMap,
+  tap,
+} from "rxjs";
 import { CoursesService } from "./courses.service";
 import { CourseCreate } from "@app/models/course.model";
 
@@ -15,18 +22,28 @@ export class CoursesStoreService {
 
   constructor(private coursesService: CoursesService) {}
 
-  getAll(): void {
+  getAll(): Observable<any> {
     // Add your code here
     this.isLoading$$.next(true);
-    this.coursesService
-      .getAll()
-      .pipe(
-        map((res) => {
-          this.courses$$.next(res.result);
-          this.isLoading$$.next(false);
-        })
-      )
-      .subscribe();
+    return this.coursesService.getAll().pipe(
+      switchMap((res) => {
+        console.log(res);
+        return forkJoin(
+          res.result.map((course: any) =>
+            forkJoin(
+              course.authors.map((authorId: string) =>
+                this.getAuthorById(authorId)
+              )
+            ).pipe(map((authors) => ({ ...course, authors })))
+          )
+        );
+      }),
+      tap((full) => {
+        console.log("from getAll()", full);
+        this.courses$$.next(full);
+        this.isLoading$$.next(false);
+      })
+    );
   }
 
   createCourse(course: CourseCreate): void {
@@ -39,10 +56,11 @@ export class CoursesStoreService {
     // Add your code here
     this.isLoading$$.next(true);
     return this.coursesService.getCourse(id).pipe(
-      map((res) => {
-        res.result;
-        console.log(res);
-        this.isLoading$$.next(false);
+      switchMap((res) => {
+        const course = res.result;
+        return forkJoin(
+          course.authors.map((authorId: string) => this.getAuthorById(authorId))
+        ).pipe(map((authors) => ({ ...course, authors })));
       })
     );
   }
@@ -88,6 +106,10 @@ export class CoursesStoreService {
 
   getAuthorById(id: string): Observable<any> {
     // Add your code here
-    return this.coursesService.getAuthorById(id);
+    return this.coursesService.getAuthorById(id).pipe(
+      map((res) => {
+        return res.result.name;
+      })
+    );
   }
 }

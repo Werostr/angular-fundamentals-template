@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { UserService } from "./user.service";
-import { BehaviorSubject, map } from "rxjs";
+import { BehaviorSubject, map, Observable } from "rxjs";
 
 @Injectable({
   providedIn: "root",
@@ -14,18 +14,15 @@ export class UserStoreService {
 
   constructor(private userService: UserService) {}
 
-  getUser() {
+  getUser(): Observable<any> {
     // Add your code here
-    this.userService
-      .getUser()
-      .pipe(
-        map((res) => {
-          console.log(res);
-          this.name$$.next(res.name);
-          this.isAdmin$$.next(res.isAdmin);
-        })
-      )
-      .subscribe();
+    return this.userService.getUser().pipe(
+      map((res) => {
+        console.log("from getUser()", res);
+        this.name$$.next(res.result.name);
+        this.isAdmin$$.next(res.result.role === "admin");
+      })
+    );
   }
 
   get isAdmin() {

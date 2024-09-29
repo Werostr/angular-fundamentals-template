@@ -29,7 +29,7 @@ import { UserStoreService } from "./user/services/user-store.service";
     CoursesService,
     CoursesStoreService,
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
-    WindowService,
+    { provide: "Window", useValue: window },
   ],
   bootstrap: [AppComponent],
 })

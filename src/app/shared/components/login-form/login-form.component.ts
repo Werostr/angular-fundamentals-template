@@ -23,7 +23,8 @@ export class LoginFormComponent {
     if (this.loginForm.valid) {
       console.log(this.loginForm.value);
       this.authService.login(this.loginForm.value);
-      this.userStoreService.getUser();
+      console.log("from onLogin after login");
+      this.userStoreService.getUser().subscribe();
       this.loginForm.reset();
     } else {
       console.log("Invalid form");

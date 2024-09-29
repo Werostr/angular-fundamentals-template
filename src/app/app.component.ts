@@ -17,13 +17,14 @@ export class AppComponent {
     private userStoreService: UserStoreService
   ) {}
 
-  // ngOnInit(): void {
-  //   this.userStoreService.getUser();
-  // }
+  ngOnInit(): void {
+    this.userStoreService.getUser().subscribe();
+  }
 
   onLogout(): void {
     this.authService.logout();
     this.router.navigate(["/login"]);
     console.log("Logout");
+    this.userStoreService.getUser().subscribe();
   }
 }

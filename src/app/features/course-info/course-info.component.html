@@ -21,11 +21,13 @@
     </div>
     <div>
       <b>Authors: </b
-      ><span class="course-info__info-authors">{{ course.authors }}</span>
+      ><span class="course-info__info-authors"
+        ><span *ngFor="let course of course.authors">{{ course }}</span></span
+      >
     </div>
   </div>
 </div>
 <div class="navigation-block">
   <!--Enter your code here-->
-  <app-button [buttonText]="'back'"></app-button>
+  <app-button (click)="redirectBack()" [buttonText]="'back'"></app-button>
 </div>

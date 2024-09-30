@@ -12,7 +12,9 @@ export class UserStoreService {
   private isAdmin$$ = new BehaviorSubject<boolean>(false);
   public isAdmin$ = this.isAdmin$$.asObservable();
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService) {
+    console.log("from UserStoreService constructor");
+  }
 
   getUser(): Observable<any> {
     // Add your code here

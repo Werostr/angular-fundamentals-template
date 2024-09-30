@@ -12,7 +12,7 @@ const routes: Routes = [
     component: CoursesComponent,
     pathMatch: "full",
   },
-  { path: "add", component: CoursesAddComponent, canActivate: [AdminGuard] }, // TODO: add 'canActivate: [AdminGuard]'
+  { path: "add", component: CoursesAddComponent }, // TODO: add 'canActivate: [AdminGuard]'
   { path: ":id", component: CourseDetailsComponent },
   {
     path: "edit/:id",

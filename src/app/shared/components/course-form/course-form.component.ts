@@ -13,7 +13,7 @@ import { Author } from "../../../models/author.model";
 import { ActivatedRoute, Router } from "@angular/router";
 import { UserStoreService } from "@app/user/services/user-store.service";
 import { CoursesStoreService } from "@app/services/courses-store.service";
-import { first } from "rxjs";
+import { first, map } from "rxjs";
 
 @Component({
   selector: "app-course-form",
@@ -25,12 +25,8 @@ export class CourseFormComponent implements OnInit {
   isAddMode!: boolean;
   courseForm!: FormGroup;
   submitted: boolean = false;
-  initialAuthors: Author[] = [
-    //TODO: static?
-    { id: uuidv4(), name: "Author One" },
-    { id: uuidv4(), name: "Author Two" },
-  ];
-  authorsList: Author[] = [...this.initialAuthors];
+  initialAuthors: Author[] = [];
+  authorsList: Author[] = [];
 
   constructor(
     public fb: FormBuilder,
@@ -38,11 +34,11 @@ export class CourseFormComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private coursesStoreService: CoursesStoreService
-  ) {
-    library.addIconPacks(fas);
-  }
+  ) {}
 
   ngOnInit(): void {
+    this.library.addIconPacks(fas);
+
     this.id = this.route.snapshot.params["id"];
     this.isAddMode = !this.id;
     console.log(this.id);
@@ -73,12 +69,19 @@ export class CourseFormComponent implements OnInit {
         console.log(course), this.courseForm.patchValue(course);
       });
     }
-  }
 
-  // Use the names `title`, `description`, `author`, 'authors' (for authors list), `duration` for the form controls.
+    this.loadInitialAuthors();
+  }
 
   get courseAuthors(): FormArray {
     return this.courseForm.get("authors") as FormArray;
+  }
+
+  loadInitialAuthors() {
+    this.coursesStoreService.getAllAuthors().subscribe((authors) => {
+      this.initialAuthors = authors.result;
+      this.authorsList = [...this.initialAuthors];
+    });
   }
 
   addCourseAuthor(author: Author): void {
@@ -94,22 +97,39 @@ export class CourseFormComponent implements OnInit {
 
   addAuthor(name: string): void {
     if (name && this.courseForm.get("author.name")?.valid) {
-      const newAuthor = { id: uuidv4(), name };
-      this.authorsList.push(newAuthor);
-      this.initialAuthors.push(newAuthor);
+      this.coursesStoreService
+        .createAuthor(name)
+        .pipe(
+          map((author) => {
+            console.log(author);
+            this.authorsList.push(author.result);
+          })
+        )
+        .subscribe();
       this.courseForm.get("author.name")?.reset();
-      console.log(name);
     }
   }
 
   onSubmit(): void {
     this.submitted = true;
     if (this.courseForm.valid) {
-      console.log(this.courseForm.value);
       this.submitted = false;
       if (this.isAddMode) {
-        this.coursesStoreService.createCourse(this.courseForm.value);
+        // Ads course
+
+        //const courseFormWithoutAuthor = { ...this.courseForm.value };
+        //delete courseFormWithoutAuthor.author;
+        this.coursesStoreService.createCourse({
+          title: this.courseForm.value.title,
+          description: this.courseForm.value.description,
+          duration: this.courseForm.value.duration,
+          authors: this.courseForm.value.authors.map(
+            (author: Author) => author.id
+          ),
+        });
       } else {
+        // Edits course
+        console.log(this.courseForm.value);
         this.coursesStoreService.editCourse(
           this.id as string,
           this.courseForm.value

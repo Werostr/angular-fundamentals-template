@@ -13,6 +13,7 @@ export class LoginFormComponent {
   //Use the names `email` and `password` for form controls.
   email: string = "";
   password: string = "";
+  submitted: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -20,11 +21,11 @@ export class LoginFormComponent {
   ) {}
 
   onLogin(): void {
+    this.submitted = true;
     if (this.loginForm.valid) {
-      console.log(this.loginForm.value);
       this.authService.login(this.loginForm.value);
-      console.log("from onLogin after login");
-      this.userStoreService.getUser().subscribe();
+      //this.userStoreService.getUser().subscribe();
+      this.submitted = false;
       this.loginForm.reset();
     } else {
       console.log("Invalid form");

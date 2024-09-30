@@ -18,7 +18,9 @@ export class AuthService {
     private sessionStorageService: SessionStorageService,
     private router: Router,
     private userStoreService: UserStoreService
-  ) {}
+  ) {
+    this.isAuthorized$$.next(!!this.sessionStorageService.getToken());
+  }
 
   login(user: UserLogin): void {
     // replace 'any' with the required interface
@@ -31,7 +33,7 @@ export class AuthService {
           if (response.successful) {
             this.sessionStorageService.setToken(response.result);
             this.isAuthorized$$.next(true);
-            this.router.navigate(["/courses"]);
+            this.router.navigate(["/courses/add"]); // TODO: remove add
           }
         })
       )

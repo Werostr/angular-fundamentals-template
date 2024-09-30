@@ -1,8 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
+import { Course } from "@app/models/course.model";
 import { CoursesStoreService } from "@app/services/courses-store.service";
 import { UserStoreService } from "@app/user/services/user-store.service";
-import { Observable } from "rxjs";
+import { map, Observable } from "rxjs";
 
 @Component({
   selector: "app-courses",
@@ -10,8 +11,8 @@ import { Observable } from "rxjs";
   styleUrls: ["./courses.component.scss"],
 })
 export class CoursesComponent implements OnInit {
-  public coursesList$!: Observable<any>;
-  public isAdmin!: boolean; // TODO
+  public coursesList$!: Observable<any>; // TODO
+  public isAdmin: boolean = false; // TODO
 
   constructor(
     public coursesStoreService: CoursesStoreService,
@@ -20,10 +21,26 @@ export class CoursesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // this.coursesStoreService.courses$
+    //   .pipe(
+    //     map((courses) => {
+    //       console.log(courses);
+    //       this.coursesList$ = courses;
+    //     })
+    //   )
+    //   .subscribe();
     this.coursesList$ = this.coursesStoreService.courses$;
     this.coursesStoreService.getAll().subscribe();
-    this.isAdmin = this.userStoreService.isAdmin;
-    //this.userStoreService.getUser().subscribe();
+    // this.coursesStoreService.getAll().subscribe((courses) => {
+    //   this.coursesList$ = courses;
+    // });
+    // this.userStoreService.isAdmin$.pipe(
+    //   map((isAdmin) => (this.isAdmin = isAdmin))
+    // );
+    // this.userStoreService.getUser().subscribe((isAdmin: boolean) => {
+    //   console.log(isAdmin);
+    //   this.isAdmin = isAdmin;
+    // });
   }
 
   redirectToAddCourse(): void {
@@ -39,5 +56,8 @@ export class CoursesComponent implements OnInit {
   }
   onDelete(id: string): void {
     this.coursesStoreService.deleteCourse(id);
+  }
+  onSearch(searchTerm: string): void {
+    this.coursesStoreService.filterCourses(searchTerm).subscribe();
   }
 }

@@ -10,7 +10,7 @@ import { Observable } from "rxjs";
   styleUrls: ["./course-details.component.css"],
 })
 export class CourseDetailsComponent implements OnInit {
-  course$!: Observable<any>; // TODO: Change the type to Course
+  course!: any; // TODO: Change the type to Course
   id!: string;
 
   constructor(
@@ -21,7 +21,8 @@ export class CourseDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.id = this.route.snapshot.params["id"];
     this.coursesStoreService.getCourse(this.id).subscribe((res) => {
-      console.log(res), (this.course$ = res);
+      console.log(res);
+      this.course = res;
     });
     //this.course$ = this.coursesStoreService.getCourse(this.id);
     // { next: (course) => (this.course$ = course) }

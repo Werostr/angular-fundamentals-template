@@ -1,6 +1,7 @@
-<div *ngIf="coursesList$ | async as courses; else noCourses">
+<div *ngIf="coursesList$ | async as coursesList; else noCourses">
+  <app-search (search)="onSearch($event)"></app-search>
   <app-courses-list
-    [courses]="courses"
+    [courses]="coursesList"
     [editable]="isAdmin"
     (showCourse)="onShow($event)"
     (editCourse)="onEdit($event)"

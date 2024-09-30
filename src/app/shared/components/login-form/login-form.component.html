@@ -16,14 +16,11 @@
             [(ngModel)]="email"
             #emailCtrl="ngModel"
             [ngClass]="{
-              error:
-                emailCtrl.invalid && (emailCtrl.touched || loginForm.submitted)
+              error: emailCtrl.invalid && (emailCtrl.touched || submitted)
             }"
           />
           <span
-            *ngIf="
-              emailCtrl.invalid && (emailCtrl.touched || loginForm.submitted)
-            "
+            *ngIf="emailCtrl.invalid && (emailCtrl.touched || submitted)"
             id="emailErrorMessage"
             class="text-danger"
           >
@@ -54,8 +51,7 @@
               #passwordCtrl="ngModel"
               [ngClass]="{
                 error:
-                  passwordCtrl.invalid &&
-                  (passwordCtrl.touched || loginForm.submitted)
+                  passwordCtrl.invalid && (passwordCtrl.touched || submitted)
               }"
             />
             <fa-icon
@@ -65,10 +61,7 @@
             ></fa-icon>
           </div>
           <span
-            *ngIf="
-              passwordCtrl.invalid &&
-              (passwordCtrl.touched || loginForm.submitted)
-            "
+            *ngIf="passwordCtrl.invalid && (passwordCtrl.touched || submitted)"
             id="passwordErrorMessage"
             class="text-danger"
             ><span *ngIf="passwordCtrl.errors?.['required']"

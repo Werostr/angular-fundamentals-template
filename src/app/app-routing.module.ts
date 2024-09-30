@@ -9,7 +9,6 @@ const routes: Routes = [
     path: "login",
     loadChildren: () =>
       import("./features/login/login.module").then((m) => m.LoginModule),
-    canActivate: [NotAuthorizedGuard],
   },
   {
     path: "registration",
@@ -17,7 +16,6 @@ const routes: Routes = [
       import("./features/registration/registration.module").then(
         (m) => m.RegistrationModule
       ),
-    canActivate: [NotAuthorizedGuard],
   },
   {
     path: "courses",

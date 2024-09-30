@@ -7,9 +7,7 @@ import { map, Observable } from "rxjs";
   providedIn: "root",
 })
 export class AuthorizedGuard implements CanLoad {
-  // TODO: deprecated?
   // Add your code here
-  //public isAuthorized$!: Observable<boolean>;
 
   constructor(private authService: AuthService, private router: Router) {}
 
@@ -17,14 +15,13 @@ export class AuthorizedGuard implements CanLoad {
     route: Route,
     segments: UrlSegment[]
   ): Observable<boolean | UrlTree> | boolean | UrlTree {
-    //this.isAuthorized$ = this.authService.isAuthorized$;
-    //this.authService.isAuthorised.subscribe();
-
     return this.authService.isAuthorized$.pipe(
       map((isAuthorized) => {
         if (!isAuthorized) {
+          console.log("Not authorized", UrlTree);
           return this.router.createUrlTree(["/login"]);
         } else {
+          console.log("Authorized", UrlTree);
           return true;
         }
       })

@@ -1,5 +1,5 @@
-<div class="app-search">
-  <form #searchForm="ngForm">
+<form #searchForm="ngForm">
+  <div class="app-search">
     <input
       type="text"
       name="search"
@@ -7,6 +7,9 @@
       [(ngModel)]="searchText"
       required
     />
-    <app-button (click)="onSearch()" [buttonText]="'search'"></app-button>
-  </form>
-</div>
+    <app-button
+      (click)="onSearch(searchForm.value.search)"
+      [buttonText]="'search'"
+    ></app-button>
+  </div>
+</form>

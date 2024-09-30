@@ -7,7 +7,7 @@ import {
   UrlTree,
 } from "@angular/router";
 import { AuthService } from "../services/auth.service";
-import { Observable } from "rxjs";
+import { map, Observable } from "rxjs";
 
 @Injectable({
   providedIn: "root",
@@ -20,8 +20,14 @@ export class NotAuthorizedGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean | UrlTree> | boolean | UrlTree {
-    // QUESTION: which way is better, this or from authorized.guard.ts?
-    if (!this.authService.isAuthorised) return true;
-    else return this.router.createUrlTree(["/courses"]);
+    return this.authService.isAuthorized$.pipe(
+      map((isAuthorized) => {
+        if (isAuthorized) {
+          return this.router.createUrlTree(["/courses/add"]); //TODO: Change this to /courses
+        } else {
+          return true;
+        }
+      })
+    );
   }
 }

@@ -39,7 +39,7 @@ export class CoursesService {
 
   filterCourses(value: string): Observable<any> {
     // Add your code here
-    return this.http.get(`${this.baseUrl}/courses/filter?value=${value}`);
+    return this.http.get(`${this.baseUrl}/courses/filter?title=${value}`);
   }
 
   getAllAuthors(): Observable<any> {
@@ -49,7 +49,7 @@ export class CoursesService {
 
   createAuthor(name: string): Observable<any> {
     // Add your code here
-    return this.http.post(`${this.baseUrl}/authors/add`, name);
+    return this.http.post(`${this.baseUrl}/authors/add`, { name: name });
   }
 
   getAuthorById(id: string): Observable<any> {

@@ -15,15 +15,15 @@ import { NgForm, NgModel } from "@angular/forms";
 export class SearchComponent {
   // Use the name `placeholder` for the @Input.
   // Use the name `search` for the @Output.
-  @Input() placeholder: string = "Input text";
+  @Input() placeholder?: string = "Input text";
   @Output() search = new EventEmitter<string>();
 
   @ViewChild("searchForm") public searchForm!: NgForm;
   @ViewChild("email") public searchText!: NgModel;
 
-  onSearch(): void {
+  onSearch(value: string): void {
     if (this.searchForm.valid) {
-      this.search.emit(this.searchForm.value.search);
+      this.search.emit(value);
       this.searchForm.reset();
     }
   }

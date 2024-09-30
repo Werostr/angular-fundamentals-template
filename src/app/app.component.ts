@@ -18,13 +18,13 @@ export class AppComponent {
   ) {}
 
   ngOnInit(): void {
-    this.userStoreService.getUser().subscribe();
+    // this.userStoreService.getUser().subscribe();
   }
 
   onLogout(): void {
     this.authService.logout();
     this.router.navigate(["/login"]);
     console.log("Logout");
-    this.userStoreService.getUser().subscribe();
+    //this.userStoreService.getUser().subscribe();
   }
 }

@@ -10,7 +10,6 @@ export interface Course {
 export interface CourseCreate {
   title: string;
   description: string;
-  creationDate: Date;
   duration: number;
   authors: string[];
 }

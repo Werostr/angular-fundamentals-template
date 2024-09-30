@@ -1,14 +1,18 @@
 import { Injectable } from "@angular/core";
 import {
   BehaviorSubject,
+  catchError,
   forkJoin,
   map,
   Observable,
+  of,
   switchMap,
   tap,
+  throwError,
 } from "rxjs";
 import { CoursesService } from "./courses.service";
 import { CourseCreate } from "@app/models/course.model";
+import { HttpErrorResponse } from "@angular/common/http";
 
 @Injectable({
   providedIn: "root",
@@ -38,10 +42,14 @@ export class CoursesStoreService {
           )
         );
       }),
-      tap((full) => {
-        console.log("from getAll()", full);
-        this.courses$$.next(full);
+      tap((fixedCourses: any) => {
+        this.courses$$.next(fixedCourses);
         this.isLoading$$.next(false);
+      }),
+      catchError((error) => {
+        this.handleError(error);
+        this.courses$$.next([]);
+        return of([]);
       })
     );
   }
@@ -78,18 +86,36 @@ export class CoursesStoreService {
     this.coursesService.deleteCourse(id).subscribe(() => this.getAll());
   }
 
-  filterCourses(value: string): void {
+  filterCourses(value: string): Observable<any> {
     // Add your code here
     this.isLoading$$.next(true);
-    this.coursesService
-      .filterCourses(value)
-      .pipe(
-        map((res) => {
-          this.courses$$.next(res.result);
-          this.isLoading$$.next(false);
-        })
-      )
-      .subscribe();
+    return this.coursesService.filterCourses(value).pipe(
+      switchMap((res) => {
+        console.log(res);
+        if (res.result.length === 0) {
+          return of([]);
+        }
+        return forkJoin(
+          res.result.map((course: any) =>
+            forkJoin(
+              course.authors.map((authorId: string) =>
+                this.getAuthorById(authorId)
+              )
+            ).pipe(map((authors) => ({ ...course, authors })))
+          )
+        );
+      }),
+      map((res: any) => {
+        console.log(res);
+        this.courses$$.next(res);
+        this.isLoading$$.next(false);
+      }),
+      catchError((error) => {
+        this.handleError(error);
+        this.courses$$.next([]);
+        return of([]);
+      })
+    );
   }
 
   getAllAuthors(): Observable<any> {
@@ -97,11 +123,11 @@ export class CoursesStoreService {
     return this.coursesService.getAllAuthors();
   }
 
-  createAuthor(name: string): void {
+  createAuthor(name: string): Observable<any> {
     // Add your code here
-    this.coursesService
-      .createAuthor(name)
-      .subscribe(() => this.getAllAuthors());
+    return this.coursesService.createAuthor(name);
+
+    //.subscribe(() => this.getAllAuthors());
   }
 
   getAuthorById(id: string): Observable<any> {
@@ -110,6 +136,25 @@ export class CoursesStoreService {
       map((res) => {
         return res.result.name;
       })
+    );
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    console.log("In handle error");
+    if (error.status === 0) {
+      // A client-side or network error occurred. Handle it accordingly.
+      console.error("An error occurred:", error.error);
+    } else {
+      // The backend returned an unsuccessful response code.
+      // The response body may contain clues as to what went wrong.
+      console.error(
+        `Backend returned code ${error.status}, body was: `,
+        error.error
+      );
+    }
+    // Return an observable with a user-facing error message.
+    return throwError(
+      () => new Error("Something bad happened; please try again later.")
     );
   }
 }

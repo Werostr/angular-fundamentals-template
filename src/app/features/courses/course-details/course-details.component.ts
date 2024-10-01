@@ -2,7 +2,6 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Course } from "@app/models/course.model";
 import { CoursesStoreService } from "@app/services/courses-store.service";
-import { Observable } from "rxjs";
 
 @Component({
   selector: "app-course-details",
@@ -10,7 +9,7 @@ import { Observable } from "rxjs";
   styleUrls: ["./course-details.component.css"],
 })
 export class CourseDetailsComponent implements OnInit {
-  course!: any; // TODO: Change the type to Course
+  course!: Course;
   id!: string;
 
   constructor(
@@ -21,10 +20,7 @@ export class CourseDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.id = this.route.snapshot.params["id"];
     this.coursesStoreService.getCourse(this.id).subscribe((res) => {
-      console.log(res);
       this.course = res;
     });
-    //this.course$ = this.coursesStoreService.getCourse(this.id);
-    // { next: (course) => (this.course$ = course) }
   }
 }

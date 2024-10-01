@@ -1,7 +1,12 @@
 <app-header
   ><div class="header-login">
-    <span>User name</span>
-    <app-button (click)="onLogout()" buttonText="logout"></app-button></div
+    <span>{{ (name$ | async) || "" }}</span>
+    <span *ngIf="isAuthorized$ | async; else loginTemplate"
+      ><app-button (click)="onLogout()" buttonText="logout"></app-button
+    ></span>
+    <ng-template #loginTemplate>
+      <app-button (click)="onLogin()" buttonText="login"></app-button>
+    </ng-template></div
 ></app-header>
 <div class="app-root">
   <router-outlet></router-outlet>

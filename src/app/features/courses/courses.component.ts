@@ -3,7 +3,7 @@ import { Router } from "@angular/router";
 import { Course } from "@app/models/course.model";
 import { CoursesStoreService } from "@app/services/courses-store.service";
 import { UserStoreService } from "@app/user/services/user-store.service";
-import { map, Observable } from "rxjs";
+import { map, Observable, of } from "rxjs";
 
 @Component({
   selector: "app-courses",
@@ -11,8 +11,8 @@ import { map, Observable } from "rxjs";
   styleUrls: ["./courses.component.scss"],
 })
 export class CoursesComponent implements OnInit {
-  public coursesList$!: Observable<any>; // TODO
-  public isAdmin: boolean = false; // TODO
+  public coursesList$!: Observable<Course[]>;
+  public isAdmin$!: Observable<boolean>;
 
   constructor(
     public coursesStoreService: CoursesStoreService,
@@ -21,26 +21,10 @@ export class CoursesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // this.coursesStoreService.courses$
-    //   .pipe(
-    //     map((courses) => {
-    //       console.log(courses);
-    //       this.coursesList$ = courses;
-    //     })
-    //   )
-    //   .subscribe();
+    this.isAdmin$ = this.userStoreService.isAdmin$;
+
     this.coursesList$ = this.coursesStoreService.courses$;
     this.coursesStoreService.getAll().subscribe();
-    // this.coursesStoreService.getAll().subscribe((courses) => {
-    //   this.coursesList$ = courses;
-    // });
-    // this.userStoreService.isAdmin$.pipe(
-    //   map((isAdmin) => (this.isAdmin = isAdmin))
-    // );
-    // this.userStoreService.getUser().subscribe((isAdmin: boolean) => {
-    //   console.log(isAdmin);
-    //   this.isAdmin = isAdmin;
-    // });
   }
 
   redirectToAddCourse(): void {

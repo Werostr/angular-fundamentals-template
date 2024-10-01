@@ -8,12 +8,12 @@
     <app-button
       *ngIf="editable"
       [iconName]="'trash'"
-      (click)="onEditCourse(course.id)"
+      (click)="onDeleteCourse(course.id)"
     ></app-button>
     <app-button
       *ngIf="editable"
       [iconName]="'pen'"
-      (click)="onDeleteCourse(course.id)"
+      (click)="onEditCourse(course.id)"
     ></app-button>
   </app-course-card>
 </div>

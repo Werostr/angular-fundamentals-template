@@ -1,6 +1,14 @@
 import { Injectable } from "@angular/core";
 import { UserService } from "./user.service";
-import { BehaviorSubject, map, Observable } from "rxjs";
+import {
+  BehaviorSubject,
+  catchError,
+  map,
+  Observable,
+  of,
+  tap,
+  throwError,
+} from "rxjs";
 
 @Injectable({
   providedIn: "root",
@@ -13,16 +21,21 @@ export class UserStoreService {
   public isAdmin$ = this.isAdmin$$.asObservable();
 
   constructor(private userService: UserService) {
-    console.log("from UserStoreService constructor");
+    console.log(this.isAdmin$);
   }
 
   getUser(): Observable<any> {
     // Add your code here
     return this.userService.getUser().pipe(
-      map((res) => {
-        console.log("from getUser()", res);
+      tap((res) => {
         this.name$$.next(res.result.name);
         this.isAdmin$$.next(res.result.role === "admin");
+      }),
+      catchError((error) => {
+        console.log("Error from getUser()", error);
+        this.name$$.next("");
+        this.isAdmin$$.next(false);
+        return of(null);
       })
     );
   }

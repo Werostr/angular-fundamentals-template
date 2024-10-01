@@ -5,19 +5,18 @@ import { CoursesComponent } from "./courses.component";
 import { CoursesAddComponent } from "./courses-add/courses-add.component";
 import { CourseDetailsComponent } from "./course-details/course-details.component";
 
-// TODO: childrens? folder structure?
 const routes: Routes = [
   {
     path: "",
     component: CoursesComponent,
     pathMatch: "full",
   },
-  { path: "add", component: CoursesAddComponent }, // TODO: add 'canActivate: [AdminGuard]'
+  { path: "add", component: CoursesAddComponent, canActivate: [AdminGuard] },
   { path: ":id", component: CourseDetailsComponent },
   {
     path: "edit/:id",
     component: CoursesAddComponent,
-    // TODO: add 'canActivate: [AdminGuard]'
+    canActivate: [AdminGuard],
   },
 ];
 

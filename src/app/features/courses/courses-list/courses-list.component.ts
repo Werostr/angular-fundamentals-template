@@ -7,7 +7,7 @@ import { Course } from "@app/models/course.model";
   styleUrls: ["./courses-list.component.scss"],
 })
 export class CoursesListComponent {
-  @Input() courses: any = []; //TODO: Change the type to Course[]
+  @Input() courses: Course[] = [];
   @Input() editable!: boolean;
 
   @Output() showCourse = new EventEmitter<string>();

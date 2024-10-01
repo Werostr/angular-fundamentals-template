@@ -1,5 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { CourseCreate } from "@app/models/course.model";
 import { Observable } from "rxjs";
 
 @Injectable({
@@ -15,13 +16,13 @@ export class CoursesService {
     return this.http.get(`${this.baseUrl}/courses/all`);
   }
 
-  createCourse(course: any): Observable<any> {
+  createCourse(course: CourseCreate): Observable<any> {
     // replace 'any' with the required interface
     // Add your code here
     return this.http.post(`${this.baseUrl}/courses/add`, course);
   }
 
-  editCourse(id: string, course: any): Observable<any> {
+  editCourse(id: string, course: CourseCreate): Observable<any> {
     // replace 'any' with the required interface
     // Add your code here
     return this.http.put(`${this.baseUrl}/courses/${id}`, course);

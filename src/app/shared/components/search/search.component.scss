@@ -1,9 +1,10 @@
 .app-search {
   display: flex;
-  width: 40%;
+  width: 100%;
   align-items: baseline;
 
   & input {
+    width: 300px;
     margin-right: 24px;
     border-color: #ccc;
   }

@@ -8,11 +8,6 @@ import { Course } from "@app/models/course.model";
 })
 export class CourseCardComponent {
   @Input() course!: Course;
-
-  // get authors(): string {
-  //   return this.course.authors.join(", ");
-  // }
-
   @Input() editable!: boolean;
 
   @Output() clickOnShow = new EventEmitter<string>();

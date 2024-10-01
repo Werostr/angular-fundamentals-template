@@ -15,6 +15,7 @@ export class AdminGuard implements CanActivate {
   canActivate(): Observable<boolean | UrlTree> | boolean | UrlTree {
     return this.userStoreService.isAdmin$.pipe(
       map((isAdmin) => {
+        console.log(isAdmin);
         if (!isAdmin) {
           return this.router.createUrlTree(["/courses"]);
         }

@@ -11,8 +11,10 @@ import {
   throwError,
 } from "rxjs";
 import { CoursesService } from "./courses.service";
-import { CourseCreate } from "@app/models/course.model";
+import { Course, CourseCreate } from "@app/models/course.model";
 import { HttpErrorResponse } from "@angular/common/http";
+import { Router } from "@angular/router";
+import { Author } from "@app/models/author.model";
 
 @Injectable({
   providedIn: "root",
@@ -24,14 +26,13 @@ export class CoursesStoreService {
   private courses$$ = new BehaviorSubject<any[]>([]); // TODO: replace 'any' with the required interface
   public courses$ = this.courses$$.asObservable();
 
-  constructor(private coursesService: CoursesService) {}
+  constructor(private coursesService: CoursesService, private router: Router) {}
 
-  getAll(): Observable<any> {
+  getAll(): Observable<Course[]> {
     // Add your code here
     this.isLoading$$.next(true);
     return this.coursesService.getAll().pipe(
       switchMap((res) => {
-        console.log(res);
         return forkJoin(
           res.result.map((course: any) =>
             forkJoin(
@@ -57,17 +58,25 @@ export class CoursesStoreService {
   createCourse(course: CourseCreate): void {
     // replace 'any' with the required interface
     // Add your code here
-    this.coursesService.createCourse(course).subscribe(() => this.getAll());
+    this.coursesService.createCourse(course).subscribe((res) => {
+      console.log(res);
+      this.router.navigate(["/courses"]);
+      this.getAll();
+    });
   }
 
-  getCourse(id: string): Observable<any> {
+  getCourse(id: string): Observable<Course> {
     // Add your code here
     this.isLoading$$.next(true);
     return this.coursesService.getCourse(id).pipe(
       switchMap((res) => {
         const course = res.result;
         return forkJoin(
-          course.authors.map((authorId: string) => this.getAuthorById(authorId))
+          course.authors.map((authorId: string) =>
+            this.getAuthorById(authorId).pipe(
+              map((authorName) => ({ id: authorId, name: authorName }))
+            )
+          )
         ).pipe(map((authors) => ({ ...course, authors })));
       })
     );
@@ -86,12 +95,11 @@ export class CoursesStoreService {
     this.coursesService.deleteCourse(id).subscribe(() => this.getAll());
   }
 
-  filterCourses(value: string): Observable<any> {
+  filterCourses(value: string): Observable<Course[]> {
     // Add your code here
     this.isLoading$$.next(true);
     return this.coursesService.filterCourses(value).pipe(
       switchMap((res) => {
-        console.log(res);
         if (res.result.length === 0) {
           return of([]);
         }
@@ -105,8 +113,7 @@ export class CoursesStoreService {
           )
         );
       }),
-      map((res: any) => {
-        console.log(res);
+      tap((res: any) => {
         this.courses$$.next(res);
         this.isLoading$$.next(false);
       }),
@@ -118,19 +125,19 @@ export class CoursesStoreService {
     );
   }
 
-  getAllAuthors(): Observable<any> {
+  getAllAuthors(): Observable<Author[]> {
     // Add your code here
-    return this.coursesService.getAllAuthors();
+    return this.coursesService.getAllAuthors().pipe(map((res) => res.result));
   }
 
-  createAuthor(name: string): Observable<any> {
+  createAuthor(name: string): Observable<Author> {
     // Add your code here
-    return this.coursesService.createAuthor(name);
-
-    //.subscribe(() => this.getAllAuthors());
+    return this.coursesService
+      .createAuthor(name)
+      .pipe(map((res) => res.result));
   }
 
-  getAuthorById(id: string): Observable<any> {
+  getAuthorById(id: string): Observable<string> {
     // Add your code here
     return this.coursesService.getAuthorById(id).pipe(
       map((res) => {

@@ -2,6 +2,7 @@ import { Component, ViewChild } from "@angular/core";
 import { NgForm } from "@angular/forms";
 import { AuthService } from "@app/auth/services/auth.service";
 import { UserStoreService } from "@app/user/services/user-store.service";
+import { map } from "rxjs";
 
 @Component({
   selector: "app-login-form",
@@ -23,8 +24,10 @@ export class LoginFormComponent {
   onLogin(): void {
     this.submitted = true;
     if (this.loginForm.valid) {
-      this.authService.login(this.loginForm.value);
-      //this.userStoreService.getUser().subscribe();
+      this.authService
+        .login(this.loginForm.value)
+        .pipe(map(() => this.userStoreService.getUser().subscribe()))
+        .subscribe();
       this.submitted = false;
       this.loginForm.reset();
     } else {

@@ -27,8 +27,6 @@ export class TokenInterceptor implements HttpInterceptor {
     const token = this.sessionStorageService.getToken();
     let request = req;
 
-    console.log(token);
-
     if (token !== null) {
       request = req.clone({
         setHeaders: {
@@ -36,7 +34,7 @@ export class TokenInterceptor implements HttpInterceptor {
         },
       });
     }
-    console.log(request);
+
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {

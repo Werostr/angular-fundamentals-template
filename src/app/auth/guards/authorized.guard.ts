@@ -18,10 +18,8 @@ export class AuthorizedGuard implements CanLoad {
     return this.authService.isAuthorized$.pipe(
       map((isAuthorized) => {
         if (!isAuthorized) {
-          console.log("Not authorized", UrlTree);
           return this.router.createUrlTree(["/login"]);
         } else {
-          console.log("Authorized", UrlTree);
           return true;
         }
       })

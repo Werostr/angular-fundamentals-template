@@ -1,8 +1,18 @@
 <div *ngIf="coursesList$ | async as coursesList; else noCourses">
-  <app-search (search)="onSearch($event)"></app-search>
+  <div *ngIf="coursesList.length > 0; else noCourses">
+    <div class="courses__header">
+      <app-search (search)="onSearch($event)"></app-search>
+      <app-button
+        (click)="redirectToAddCourse()"
+        *ngIf="isAdmin$ | async"
+        buttonText="add new course"
+      ></app-button>
+    </div>
+  </div>
+
   <app-courses-list
     [courses]="coursesList"
-    [editable]="isAdmin"
+    [editable]="(isAdmin$ | async) || false"
     (showCourse)="onShow($event)"
     (editCourse)="onEdit($event)"
     (deleteCourse)="onDelete($event)"
@@ -11,10 +21,12 @@
 
 <ng-template #noCourses>
   <app-info
+    class="courses__empty"
     title="your list is empty"
     text="Please use `Add New Course` button to add your first course"
     ><app-button
       (click)="redirectToAddCourse()"
+      *ngIf="isAdmin$ | async"
       buttonText="add new course"
     ></app-button
   ></app-info>

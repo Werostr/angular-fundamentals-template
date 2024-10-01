@@ -23,7 +23,7 @@ export class NotAuthorizedGuard implements CanActivate {
     return this.authService.isAuthorized$.pipe(
       map((isAuthorized) => {
         if (isAuthorized) {
-          return this.router.createUrlTree(["/courses/add"]); //TODO: Change this to /courses
+          return this.router.createUrlTree(["/courses"]);
         } else {
           return true;
         }

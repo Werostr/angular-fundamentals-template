@@ -8,12 +8,11 @@ import {
 } from "@angular/forms";
 import { FaIconLibrary } from "@fortawesome/angular-fontawesome";
 import { fas } from "@fortawesome/free-solid-svg-icons";
-import { v4 as uuidv4 } from "uuid";
 import { Author } from "../../../models/author.model";
 import { ActivatedRoute, Router } from "@angular/router";
-import { UserStoreService } from "@app/user/services/user-store.service";
 import { CoursesStoreService } from "@app/services/courses-store.service";
-import { first, map } from "rxjs";
+import { map } from "rxjs";
+import { Course } from "@app/models/course.model";
 
 @Component({
   selector: "app-course-form",
@@ -41,8 +40,6 @@ export class CourseFormComponent implements OnInit {
 
     this.id = this.route.snapshot.params["id"];
     this.isAddMode = !this.id;
-    console.log(this.id);
-    console.log(this.isAddMode);
 
     this.courseForm = this.fb.group({
       title: ["", [Validators.required, Validators.minLength(2)]],
@@ -65,9 +62,14 @@ export class CourseFormComponent implements OnInit {
     });
 
     if (this.id) {
-      this.coursesStoreService.getCourse(this.id).subscribe((course) => {
-        console.log(course), this.courseForm.patchValue(course);
-      });
+      this.coursesStoreService
+        .getCourse(this.id)
+        .subscribe((course: Course) => {
+          this.courseForm.patchValue(course);
+          course.authors.forEach((author: Author) => {
+            this.addCourseAuthor(author);
+          });
+        });
     }
 
     this.loadInitialAuthors();
@@ -79,7 +81,7 @@ export class CourseFormComponent implements OnInit {
 
   loadInitialAuthors() {
     this.coursesStoreService.getAllAuthors().subscribe((authors) => {
-      this.initialAuthors = authors.result;
+      this.initialAuthors = authors;
       this.authorsList = [...this.initialAuthors];
     });
   }
@@ -100,9 +102,8 @@ export class CourseFormComponent implements OnInit {
       this.coursesStoreService
         .createAuthor(name)
         .pipe(
-          map((author) => {
-            console.log(author);
-            this.authorsList.push(author.result);
+          map((author: Author) => {
+            this.authorsList.push(author);
           })
         )
         .subscribe();
@@ -110,32 +111,31 @@ export class CourseFormComponent implements OnInit {
     }
   }
 
+  goBack(): void {
+    this.router.navigate(["/courses"]);
+  }
+
   onSubmit(): void {
     this.submitted = true;
     if (this.courseForm.valid) {
       this.submitted = false;
+      const fixedForm = {
+        title: this.courseForm.value.title,
+        description: this.courseForm.value.description,
+        duration: this.courseForm.value.duration,
+        authors: this.courseForm.value.authors.map(
+          (author: Author) => author.id
+        ),
+      };
       if (this.isAddMode) {
         // Ads course
-
-        //const courseFormWithoutAuthor = { ...this.courseForm.value };
-        //delete courseFormWithoutAuthor.author;
-        this.coursesStoreService.createCourse({
-          title: this.courseForm.value.title,
-          description: this.courseForm.value.description,
-          duration: this.courseForm.value.duration,
-          authors: this.courseForm.value.authors.map(
-            (author: Author) => author.id
-          ),
-        });
+        this.coursesStoreService.createCourse(fixedForm);
+        this.courseForm.reset();
       } else {
         // Edits course
-        console.log(this.courseForm.value);
-        this.coursesStoreService.editCourse(
-          this.id as string,
-          this.courseForm.value
-        );
+        this.coursesStoreService.editCourse(this.id as string, fixedForm);
+        this.router.navigate([`/courses/${this.id}`]);
       }
-      this.courseForm.reset();
     }
   }
 }

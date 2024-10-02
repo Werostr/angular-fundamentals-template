@@ -14,3 +14,17 @@ input {
 input.error {
   border-color: red;
 }
+.input-container {
+  position: relative;
+}
+
+.input-container input {
+  padding-right: 36px;
+}
+
+.toggle-icon {
+  position: absolute;
+  right: 12px;
+  top: 37%;
+  cursor: pointer;
+}

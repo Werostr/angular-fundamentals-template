@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import {
   AbstractControl,
   FormArray,
@@ -8,29 +8,39 @@ import {
 } from "@angular/forms";
 import { FaIconLibrary } from "@fortawesome/angular-fontawesome";
 import { fas } from "@fortawesome/free-solid-svg-icons";
-import { v4 as uuidv4 } from "uuid";
 import { Author } from "../../../models/author.model";
+import { ActivatedRoute, Router } from "@angular/router";
+import { CoursesStoreService } from "@app/services/courses-store.service";
+import { map } from "rxjs";
+import { Course } from "@app/models/course.model";
 
 @Component({
   selector: "app-course-form",
   templateUrl: "./course-form.component.html",
   styleUrls: ["./course-form.component.scss"],
 })
-export class CourseFormComponent {
-  constructor(public fb: FormBuilder, public library: FaIconLibrary) {
-    library.addIconPacks(fas);
-    this.buildForm();
-  }
-
+export class CourseFormComponent implements OnInit {
+  id: string | undefined;
+  isAddMode!: boolean;
   courseForm!: FormGroup;
   submitted: boolean = false;
-  initialAuthors: Author[] = [
-    { id: uuidv4(), name: "Author One" },
-    { id: uuidv4(), name: "Author Two" },
-  ];
-  authorsList: Author[] = [...this.initialAuthors];
-  // Use the names `title`, `description`, `author`, 'authors' (for authors list), `duration` for the form controls.
-  buildForm(): void {
+  initialAuthors: Author[] = [];
+  authorsList: Author[] = [];
+
+  constructor(
+    public fb: FormBuilder,
+    public library: FaIconLibrary,
+    private route: ActivatedRoute,
+    private router: Router,
+    private coursesStoreService: CoursesStoreService
+  ) {}
+
+  ngOnInit(): void {
+    this.library.addIconPacks(fas);
+
+    this.id = this.route.snapshot.params["id"];
+    this.isAddMode = !this.id;
+
     this.courseForm = this.fb.group({
       title: ["", [Validators.required, Validators.minLength(2)]],
       description: ["", [Validators.required, Validators.minLength(2)]],
@@ -50,6 +60,19 @@ export class CourseFormComponent {
         ],
       ],
     });
+
+    if (this.id) {
+      this.coursesStoreService
+        .getCourse(this.id)
+        .subscribe((course: Course) => {
+          this.courseForm.patchValue(course);
+          course.authors.forEach((author: Author) => {
+            this.addCourseAuthor(author);
+          });
+        });
+    }
+
+    this.loadInitialAuthors();
   }
 
   get courseAuthors(): FormArray {
@@ -63,6 +86,12 @@ export class CourseFormComponent {
     );
   }
 
+  loadInitialAuthors() {
+    this.coursesStoreService.getAllAuthors().subscribe((authors) => {
+      this.initialAuthors = authors;
+      this.authorsList = [...this.initialAuthors];
+    });
+  }
   addCourseAuthor(author: Author): void {
     this.courseAuthors.push(this.fb.group(author));
     this.authorsList = this.authorsList.filter((a) => a.id !== author.id);
@@ -76,20 +105,43 @@ export class CourseFormComponent {
 
   addAuthor(name: string): void {
     if (name && this.courseForm.get("author.name")?.valid) {
-      const newAuthor = { id: uuidv4(), name };
-      this.authorsList.push(newAuthor);
-      this.initialAuthors.push(newAuthor);
+      this.coursesStoreService
+        .createAuthor(name)
+        .pipe(
+          map((author: Author) => {
+            this.authorsList.push(author);
+          })
+        )
+        .subscribe();
       this.courseForm.get("author.name")?.reset();
-      console.log(name);
     }
+  }
+
+  goBack(): void {
+    this.router.navigate(["/courses"]);
   }
 
   onSubmit(): void {
     this.submitted = true;
     if (this.courseForm.valid) {
-      console.log(this.courseForm.value);
       this.submitted = false;
-      this.courseForm.reset();
+      const fixedForm = {
+        title: this.courseForm.value.title,
+        description: this.courseForm.value.description,
+        duration: this.courseForm.value.duration,
+        authors: this.courseForm.value.authors.map(
+          (author: Author) => author.id
+        ),
+      };
+      if (this.isAddMode) {
+        // Ads course
+        this.coursesStoreService.createCourse(fixedForm);
+        this.courseForm.reset();
+      } else {
+        // Edits course
+        this.coursesStoreService.editCourse(this.id as string, fixedForm);
+        this.router.navigate([`/courses/${this.id}`]);
+      }
     }
   }
 }

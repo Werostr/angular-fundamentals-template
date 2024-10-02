@@ -95,7 +95,10 @@
         </div>
       </div>
       <div class="form__action">
-        <app-button [buttonText]="'register'" (click)="onSubmit()"></app-button>
+        <app-button
+          [buttonText]="'register'"
+          (click)="onRegister()"
+        ></app-button>
       </div>
       <div class="form__text">
         If you have an account you may

@@ -1,5 +1,8 @@
 import { Component, ViewChild } from "@angular/core";
-import { NgForm, NgModel } from "@angular/forms";
+import { NgForm } from "@angular/forms";
+import { AuthService } from "@app/auth/services/auth.service";
+import { UserStoreService } from "@app/user/services/user-store.service";
+import { map } from "rxjs";
 
 @Component({
   selector: "app-login-form",
@@ -13,12 +16,22 @@ export class LoginFormComponent {
   password: string = "";
   submitted: boolean = false;
 
+  constructor(
+    private authService: AuthService,
+    private userStoreService: UserStoreService
+  ) {}
+
   onLogin(): void {
     this.submitted = true;
     if (this.loginForm.valid) {
+      this.authService
+        .login(this.loginForm.value)
+        .pipe(map(() => this.userStoreService.getUser().subscribe()))
+        .subscribe();
       this.submitted = false;
-      console.log(this.loginForm.value);
       this.loginForm.reset();
+    } else {
+      console.log("Invalid form");
     }
   }
 }

@@ -51,8 +51,7 @@
               #passwordCtrl="ngModel"
               [ngClass]="{
                 error:
-                  passwordCtrl.invalid &&
-                  (passwordCtrl.touched || submitted)
+                  passwordCtrl.invalid && (passwordCtrl.touched || submitted)
               }"
             />
             <fa-icon
@@ -77,7 +76,7 @@
         </div>
         <div class="form__text">
           If you don't have an account you may
-          <a routerLink="/register"> <strong>Registration</strong></a>
+          <a routerLink="/registration"> <strong>Registration</strong></a>
         </div>
       </div>
     </div>

@@ -3,16 +3,14 @@ import { BrowserModule } from "@angular/platform-browser";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { SharedModule } from "@shared/shared.module";
 import { AppComponent } from "@app/app.component";
-import { CourseInfoComponent } from "@features/course-info/course-info.component";
 import { NotAuthorizedGuard } from "@app/auth/guards/not-authorized.guard";
 import { AuthorizedGuard } from "@app/auth/guards/authorized.guard";
 import { CoursesStoreService } from "@app/services/courses-store.service";
 import { CoursesService } from "@app/services/courses.service";
-import { CoursesComponent } from "./features/courses/courses.component";
-import { CoursesListComponent } from "./features/courses/courses-list/courses-list.component";
-import { CourseInfoModule } from "./features/course-info/course-info.module";
-import { CoursesModule } from "./features/courses/courses.module";
-import { CoursesListModule } from "./features/courses/courses-list/courses-list.module";
+import { AppRoutingModule } from "./app-routing.module";
+import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
+import { TokenInterceptor } from "./auth/interceptors/token.interceptor";
+import { WindowProvider } from "./auth/services/window.service";
 
 @NgModule({
   declarations: [AppComponent],
@@ -20,15 +18,17 @@ import { CoursesListModule } from "./features/courses/courses-list/courses-list.
     BrowserModule,
     SharedModule,
     FontAwesomeModule,
-    CourseInfoModule,
-    CoursesModule,
-    CoursesListModule,
+    AppRoutingModule,
+    HttpClientModule,
   ],
   providers: [
     AuthorizedGuard,
     NotAuthorizedGuard,
     CoursesService,
     CoursesStoreService,
+    { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
+    //{ provide: Window, useValue: window },
+    WindowProvider,
   ],
   bootstrap: [AppComponent],
 })

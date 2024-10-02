@@ -21,11 +21,11 @@
     </div>
     <div>
       <b>Authors: </b
-      ><span class="course-info__info-authors">{{ course.authors }}</span>
+      ><span class="course-info__info-authors">{{ authors }}</span>
     </div>
   </div>
 </div>
 <div class="navigation-block">
   <!--Enter your code here-->
-  <app-button [buttonText]="'back'"></app-button>
+  <app-button (click)="redirectBack()" [buttonText]="'back'"></app-button>
 </div>

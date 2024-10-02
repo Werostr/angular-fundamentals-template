@@ -1,5 +1,5 @@
-<div class="app-search">
-  <form #searchForm="ngForm">
+<form #searchForm="ngForm">
+  <div class="app-search">
     <input
       type="text"
       name="search"
@@ -11,5 +11,5 @@
       (click)="onSearch(searchForm.value.search)"
       [buttonText]="'search'"
     ></app-button>
-  </form>
-</div>
+  </div>
+</form>

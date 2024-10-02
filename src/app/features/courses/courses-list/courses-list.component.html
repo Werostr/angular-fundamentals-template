@@ -3,17 +3,17 @@
     *ngFor="let course of courses"
     [course]="course"
     [editable]="editable"
-    (clickOnShow)="onShowCourse(course.title)"
+    (clickOnShow)="onShowCourse(course.id)"
   >
     <app-button
       *ngIf="editable"
       [iconName]="'trash'"
-      (click)="onEditCourse(course.title)"
+      (click)="onDeleteCourse(course.id)"
     ></app-button>
     <app-button
       *ngIf="editable"
       [iconName]="'pen'"
-      (click)="onDeleteCourse(course.title)"
+      (click)="onEditCourse(course.id)"
     ></app-button>
   </app-course-card>
 </div>

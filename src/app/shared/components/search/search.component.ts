@@ -19,7 +19,7 @@ export class SearchComponent {
   @Output() search = new EventEmitter<string>();
 
   @ViewChild("searchForm") public searchForm!: NgForm;
-  @ViewChild("email") public searchText!: NgModel;
+  public searchText!: string;
 
   onSearch(value: string): void {
     if (this.searchForm.valid) {

@@ -79,6 +79,13 @@ export class CourseFormComponent implements OnInit {
     return this.courseForm.get("authors") as FormArray;
   }
 
+  invalidInput(control: string): boolean {
+    return (
+      this.courseForm.controls[control].invalid &&
+      (this.submitted || this.courseForm.controls[control].touched)
+    );
+  }
+
   loadInitialAuthors() {
     this.coursesStoreService.getAllAuthors().subscribe((authors) => {
       this.initialAuthors = authors;

@@ -92,7 +92,6 @@ export class CourseFormComponent implements OnInit {
       this.authorsList = [...this.initialAuthors];
     });
   }
-
   addCourseAuthor(author: Author): void {
     this.courseAuthors.push(this.fb.group(author));
     this.authorsList = this.authorsList.filter((a) => a.id !== author.id);

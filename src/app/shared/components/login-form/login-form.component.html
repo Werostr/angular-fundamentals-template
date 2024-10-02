@@ -6,22 +6,68 @@
         <div class="form__control">
           <label for="email">Email</label>
           <!--Use the name `email` for the form control.-->
-          <input type="text" id="email" placeholder="Input text"/>
-          <span id="emailErrorMessage" class="text-danger">Email is required.</span>
+          <input
+            type="text"
+            id="email"
+            name="email"
+            placeholder="Input text"
+            required
+            emailValidator
+            [(ngModel)]="email"
+            #emailCtrl="ngModel"
+            [ngClass]="{
+              error: emailCtrl.invalid && (emailCtrl.touched || submitted)
+            }"
+          />
+          <span
+            *ngIf="emailCtrl.invalid && (emailCtrl.touched || submitted)"
+            id="emailErrorMessage"
+            class="text-danger"
+          >
+            <span
+              *ngIf="emailCtrl.errors?.['required']; else invalidEmailTemplate"
+              >Email is required.</span
+            >
+            <ng-template #invalidEmailTemplate>
+              <span *ngIf="emailCtrl.errors?.['invalidEmail']"
+                >Email is invalid.</span
+              >
+            </ng-template>
+          </span>
         </div>
         <div class="form__control">
           <label for="password">Password</label>
           <!--Use the name `password` for the form control.-->
-          <input type="password" id="password" placeholder="Input text"/>
-          <span id="passwordErrorMessage" class="text-danger">Password is required.</span>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Input text"
+            togglePassword
+            required
+            [(ngModel)]="password"
+            #passwordCtrl="ngModel"
+            [ngClass]="{
+              error: passwordCtrl.invalid && (passwordCtrl.touched || submitted)
+            }"
+          />
+          <span
+            *ngIf="passwordCtrl.invalid && (passwordCtrl.touched || submitted)"
+            id="passwordErrorMessage"
+            class="text-danger"
+            ><span *ngIf="passwordCtrl.errors?.['required']"
+              >Password is required.</span
+            ></span
+          >
         </div>
       </div>
       <div>
         <div class="form__action">
-          <app-button></app-button>
+          <app-button [buttonText]="'login'" (click)="onLogin()"></app-button>
         </div>
         <div class="form__text">
-          If you don't have an account you may <strong>Registration</strong>
+          If you don't have an account you may
+          <a routerLink="/register"> <strong>Registration</strong></a>
         </div>
       </div>
     </div>

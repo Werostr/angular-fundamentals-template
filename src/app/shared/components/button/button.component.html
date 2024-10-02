@@ -1,4 +1,13 @@
 <div class="app-button">
   <!-- Replace the text below with your code -->
-  Button
+  <ng-container
+    *ngIf="buttonText; then textTemplate; else iconTemplate"
+  ></ng-container>
+  <ng-template #textTemplate>
+    <span>{{ buttonText }}</span>
+  </ng-template>
+  <ng-template #iconTemplate>
+    <fa-icon *ngIf="iconName" [icon]="iconName"></fa-icon>
+  </ng-template>
+  <ng-content></ng-content>
 </div>

@@ -7,6 +7,9 @@
       [(ngModel)]="searchText"
       required
     />
-    <app-button (click)="onSearch()" [buttonText]="'search'"></app-button>
+    <app-button
+      (click)="onSearch(searchForm.value.search)"
+      [buttonText]="'search'"
+    ></app-button>
   </form>
 </div>

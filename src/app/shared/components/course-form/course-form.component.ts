@@ -56,6 +56,13 @@ export class CourseFormComponent {
     return this.courseForm.get("authors") as FormArray;
   }
 
+  invalidInput(control: string): boolean {
+    return (
+      this.courseForm.controls[control].invalid &&
+      (this.submitted || this.courseForm.controls[control].touched)
+    );
+  }
+
   addCourseAuthor(author: Author): void {
     this.courseAuthors.push(this.fb.group(author));
     this.authorsList = this.authorsList.filter((a) => a.id !== author.id);

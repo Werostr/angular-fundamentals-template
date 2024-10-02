@@ -15,19 +15,14 @@
               placeholder="Input text"
               formControlName="title"
               [ngClass]="{
-                error:
-                  courseForm.controls['title'].invalid &&
-                  (submitted || courseForm.controls['title'].touched)
+                error: invalidInput('title')
               }"
             />
           </div>
           <span
             id="titleErrorMessage"
             class="text-danger"
-            *ngIf="
-              courseForm.controls['title'].invalid &&
-              (submitted || courseForm.controls['title'].touched)
-            "
+            *ngIf="invalidInput('title')"
             ><span
               *ngIf="courseForm.controls['title'].errors?.['required']; else shortTitleTemplate"
               >Title is required.</span
@@ -50,19 +45,14 @@
               cols="5"
               formControlName="description"
               [ngClass]="{
-                error:
-                  courseForm.controls['description'].invalid &&
-                  (submitted || courseForm.controls['description'].touched)
+                error: invalidInput('description')
               }"
             ></textarea>
           </div>
           <span
             id="descriptionErrorMessage"
             class="text-danger"
-            *ngIf="
-              courseForm.controls['description'].invalid &&
-              (submitted || courseForm.controls['description'].touched)
-            "
+            *ngIf="invalidInput('description')"
             ><span
               *ngIf="courseForm.controls['description'].errors?.['required']; else shortDescriptionTemplate"
               >Description is required.</span
@@ -84,9 +74,7 @@
               placeholder="Input duration"
               formControlName="duration"
               [ngClass]="{
-                error:
-                  courseForm.controls['duration'].invalid &&
-                  (submitted || courseForm.controls['duration'].touched)
+                error: invalidInput('duration')
               }"
             />
             <div class="course__duration">
@@ -97,10 +85,7 @@
           <span
             id="durationErrorMessage"
             class="text-danger"
-            *ngIf="
-              courseForm.controls['duration'].invalid &&
-              (submitted || courseForm.controls['duration'].touched)
-            "
+            *ngIf="invalidInput('duration')"
             ><span
               *ngIf="courseForm.controls['duration'].errors?.['required']; else negativeDurationTemplate"
               >Duration is required.</span
@@ -181,9 +166,7 @@
             </div>
           </div>
         </div>
-
         <div class="separator"></div>
-
         <div class="form__action">
           <app-button
             (click)="onSubmit()"

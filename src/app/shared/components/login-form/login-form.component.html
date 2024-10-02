@@ -16,14 +16,11 @@
             [(ngModel)]="email"
             #emailCtrl="ngModel"
             [ngClass]="{
-              error:
-                emailCtrl.invalid && (emailCtrl.touched || loginForm.submitted)
+              error: emailCtrl.invalid && (emailCtrl.touched || submitted)
             }"
           />
           <span
-            *ngIf="
-              emailCtrl.invalid && (emailCtrl.touched || loginForm.submitted)
-            "
+            *ngIf="emailCtrl.invalid && (emailCtrl.touched || submitted)"
             id="emailErrorMessage"
             class="text-danger"
           >
@@ -51,16 +48,11 @@
             [(ngModel)]="password"
             #passwordCtrl="ngModel"
             [ngClass]="{
-              error:
-                passwordCtrl.invalid &&
-                (passwordCtrl.touched || loginForm.submitted)
+              error: passwordCtrl.invalid && (passwordCtrl.touched || submitted)
             }"
           />
           <span
-            *ngIf="
-              passwordCtrl.invalid &&
-              (passwordCtrl.touched || loginForm.submitted)
-            "
+            *ngIf="passwordCtrl.invalid && (passwordCtrl.touched || submitted)"
             id="passwordErrorMessage"
             class="text-danger"
             ><span *ngIf="passwordCtrl.errors?.['required']"
@@ -71,7 +63,7 @@
       </div>
       <div>
         <div class="form__action">
-          <app-button [buttonText]="'login'" (click)="onSubmit()"></app-button>
+          <app-button [buttonText]="'login'" (click)="onLogin()"></app-button>
         </div>
         <div class="form__text">
           If you don't have an account you may

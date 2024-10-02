@@ -13,16 +13,11 @@
             formControlName="name"
             required
             [ngClass]="{
-              error:
-                registrationForm.controls['name'].invalid &&
-                (submitted || registrationForm.controls['name'].touched)
+              error: inputError('name')
             }"
           />
           <span
-            *ngIf="
-              registrationForm.controls['name'].invalid &&
-              (submitted || registrationForm.controls['name'].touched)
-            "
+            *ngIf="inputError('name')"
             id="nameErrorMessage"
             class="text-danger"
             ><span
@@ -45,21 +40,15 @@
             id="email"
             placeholder="Input text"
             formControlName="email"
-            emailValidator
             required
             [ngClass]="{
-              error:
-                registrationForm.controls['email'].invalid &&
-                (submitted || registrationForm.controls['email'].touched)
+              error: inputError('email')
             }"
           />
           <span
             id="emailErrorMessage"
             class="text-danger"
-            *ngIf="
-              registrationForm.controls['email'].invalid &&
-              (submitted || registrationForm.controls['email'].touched)
-            "
+            *ngIf="inputError('email')"
             ><span
               *ngIf="registrationForm.controls['email'].errors?.['required']; else invalidEmailTemplate"
               >Email is required.</span
@@ -83,18 +72,13 @@
             togglePassword
             required
             [ngClass]="{
-              error:
-                registrationForm.controls['password'].invalid &&
-                (submitted || registrationForm.controls['password'].touched)
+              error: inputError('password')
             }"
           />
           <span
             id="passwordErrorMessage"
             class="text-danger"
-            *ngIf="
-              registrationForm.controls['password'].invalid &&
-              (submitted || registrationForm.controls['password'].touched)
-            "
+            *ngIf="inputError('password')"
             ><span
               *ngIf="registrationForm.controls['password'].errors?.['required']"
               >Password is required.</span

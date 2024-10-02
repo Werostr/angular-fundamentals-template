@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { FormGroup, Validators, FormBuilder } from "@angular/forms";
+import { emailValidator } from "@app/shared/directives/email.validators";
 
 @Component({
   selector: "app-registration-form",
@@ -18,9 +19,16 @@ export class RegistrationFormComponent {
   buildForm(): void {
     this.registrationForm = this.fb.group({
       name: ["", [Validators.required, Validators.minLength(6)]],
-      email: ["", Validators.required],
+      email: ["", [Validators.required, emailValidator]],
       password: ["", Validators.required],
     });
+  }
+
+  inputError(control: string): boolean {
+    return (
+      this.registrationForm.controls[control].invalid &&
+      (this.submitted || this.registrationForm.controls[control].touched)
+    );
   }
 
   onSubmit(): void {

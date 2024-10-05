@@ -29,6 +29,7 @@ export const coursesReducer = createReducer(
   on(CoursesActions.requestAllCourses, (state) => ({
     ...state,
     isAllCoursesLoading: true,
+    errorMessage: "",
   })),
   on(CoursesActions.requestAllCoursesSuccess, (state, { courses }) => ({
     ...state,
@@ -46,6 +47,7 @@ export const coursesReducer = createReducer(
   on(CoursesActions.requestSingleCourse, (state) => ({
     ...state,
     isSingleCourseLoading: true,
+    errorMessage: "",
   })),
   on(CoursesActions.requestSingleCourseSuccess, (state, { course }) => ({
     ...state,
@@ -62,6 +64,7 @@ export const coursesReducer = createReducer(
   on(CoursesActions.requestFilteredCourses, (state) => ({
     ...state,
     isAllCoursesLoading: true,
+    errorMessage: "",
   })),
   on(CoursesActions.requestFilteredCoursesSuccess, (state, { courses }) => ({
     ...state,
@@ -80,6 +83,7 @@ export const coursesReducer = createReducer(
     ...state,
     // course: state.allCourses.find((course) => course.id === id),
     isSingleCourseLoading: true,
+    errorMessage: "",
   })),
   on(CoursesActions.requestDeleteCourseSuccess, (state, { id }) => ({
     // TESTS: add id
@@ -97,9 +101,11 @@ export const coursesReducer = createReducer(
   on(CoursesActions.requestEditCourse, (state) => ({
     ...state,
     isSingleCourseLoading: true,
+    errorMessage: "",
   })),
   on(CoursesActions.requestEditCourseSuccess, (state, { course }) => ({
     ...state,
+    course: course,
     allCourses: state.allCourses.map((c) => (c.id === course.id ? course : c)),
     isSingleCourseLoading: false,
   })),
@@ -113,9 +119,11 @@ export const coursesReducer = createReducer(
   on(CoursesActions.requestCreateCourse, (state) => ({
     ...state,
     isSingleCourseLoading: true,
+    errorMessage: "",
   })),
   on(CoursesActions.requestCreateCourseSuccess, (state, { course }) => ({
     ...state,
+    course: course,
     allCourses: [...state.allCourses, course],
     isSingleCourseLoading: false,
   })),

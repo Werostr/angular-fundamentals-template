@@ -11,8 +11,9 @@ import { fas } from "@fortawesome/free-solid-svg-icons";
 import { Author } from "../../../models/author.model";
 import { ActivatedRoute, Router } from "@angular/router";
 import { CoursesStoreService } from "@app/services/courses-store.service";
-import { map } from "rxjs";
+import { map, Observable } from "rxjs";
 import { Course } from "@app/models/course.model";
+import { CoursesStateFacade } from "@app/store/courses/courses.facade";
 
 @Component({
   selector: "app-course-form",
@@ -26,20 +27,43 @@ export class CourseFormComponent implements OnInit {
   submitted: boolean = false;
   initialAuthors: Author[] = [];
   authorsList: Author[] = [];
+  course$?: Observable<Course | null>;
 
   constructor(
     public fb: FormBuilder,
     public library: FaIconLibrary,
     private route: ActivatedRoute,
     private router: Router,
-    private coursesStoreService: CoursesStoreService
-  ) {}
+    private coursesStoreService: CoursesStoreService,
+    private coursesStateFacade: CoursesStateFacade
+  ) {
+    this.id = this.route.snapshot.params["id"];
+    this.isAddMode = !this.id;
+    if (this.id) {
+      this.course$ = this.coursesStateFacade.course$;
+      this.coursesStateFacade.getSingleCourse(this.id);
+
+      this.course$.subscribe((course) => {
+        if (course) {
+          this.courseForm.patchValue(course);
+          course.authors.forEach((author: Author) => {
+            this.addCourseAuthor(author);
+          });
+        }
+      });
+      // this.coursesStoreService
+      //   .getCourse(this.id)
+      //   .subscribe((course: Course) => {
+      //     this.courseForm.patchValue(course);
+      //     course.authors.forEach((author: Author) => {
+      //       this.addCourseAuthor(author);
+      //     });
+      //   });
+    }
+  }
 
   ngOnInit(): void {
     this.library.addIconPacks(fas);
-
-    this.id = this.route.snapshot.params["id"];
-    this.isAddMode = !this.id;
 
     this.courseForm = this.fb.group({
       title: ["", [Validators.required, Validators.minLength(2)]],
@@ -60,17 +84,6 @@ export class CourseFormComponent implements OnInit {
         ],
       ],
     });
-
-    if (this.id) {
-      this.coursesStoreService
-        .getCourse(this.id)
-        .subscribe((course: Course) => {
-          this.courseForm.patchValue(course);
-          course.authors.forEach((author: Author) => {
-            this.addCourseAuthor(author);
-          });
-        });
-    }
 
     this.loadInitialAuthors();
   }
@@ -134,14 +147,16 @@ export class CourseFormComponent implements OnInit {
           (author: Author) => author.id
         ),
       };
-      if (this.isAddMode) {
-        // Ads course
-        this.coursesStoreService.createCourse(fixedForm);
-        this.courseForm.reset();
-      } else {
+      if (!this.isAddMode && this.id) {
         // Edits course
-        this.coursesStoreService.editCourse(this.id as string, fixedForm);
+        this.coursesStateFacade.editCourse(fixedForm, this.id);
+        //this.coursesStoreService.editCourse(this.id as string, fixedForm);
         this.router.navigate([`/courses/${this.id}`]);
+      } else {
+        // Ads course
+        this.coursesStateFacade.createCourse(fixedForm);
+        //this.coursesStoreService.createCourse(fixedForm);
+        this.courseForm.reset();
       }
     }
   }

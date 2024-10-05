@@ -11,6 +11,10 @@ import { AppRoutingModule } from "./app-routing.module";
 import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
 import { TokenInterceptor } from "./auth/interceptors/token.interceptor";
 import { WindowProvider } from "./auth/services/window.service";
+import { StoreModule } from "@ngrx/store";
+import { effects, reducers } from "./store/";
+import { EffectsModule } from "@ngrx/effects";
+import { CoursesStateFacade } from "./store/courses/courses.facade";
 
 @NgModule({
   declarations: [AppComponent],
@@ -20,12 +24,15 @@ import { WindowProvider } from "./auth/services/window.service";
     FontAwesomeModule,
     AppRoutingModule,
     HttpClientModule,
+    StoreModule.forRoot(reducers),
+    EffectsModule.forRoot(effects),
   ],
   providers: [
     AuthorizedGuard,
     NotAuthorizedGuard,
     CoursesService,
     CoursesStoreService,
+    CoursesStateFacade,
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
     //{ provide: Window, useValue: window },
     WindowProvider,

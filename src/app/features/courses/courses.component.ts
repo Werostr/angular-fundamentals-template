@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { Course } from "@app/models/course.model";
 import { CoursesStoreService } from "@app/services/courses-store.service";
+import { CoursesStateFacade } from "@app/store/courses/courses.facade";
 import { UserStoreService } from "@app/user/services/user-store.service";
 import { map, Observable, of } from "rxjs";
 
@@ -11,20 +12,25 @@ import { map, Observable, of } from "rxjs";
   styleUrls: ["./courses.component.scss"],
 })
 export class CoursesComponent implements OnInit {
-  public coursesList$!: Observable<Course[]>;
+  public allCourses$!: Observable<Course[]>;
+  public courses$!: Observable<Course[]>;
   public isAdmin$!: Observable<boolean>;
 
   constructor(
     public coursesStoreService: CoursesStoreService,
     private userStoreService: UserStoreService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private coursesStateFacade: CoursesStateFacade
+  ) {
+    this.allCourses$ = this.coursesStateFacade.allCourses$;
+    this.courses$ = this.coursesStateFacade.courses$;
+    this.isAdmin$ = this.userStoreService.isAdmin$;
+  }
 
   ngOnInit(): void {
-    this.isAdmin$ = this.userStoreService.isAdmin$;
-
-    this.coursesList$ = this.coursesStoreService.courses$;
-    this.coursesStoreService.getAll().subscribe();
+    this.coursesStateFacade.getAllCourses();
+    //this.coursesList$ = this.coursesStoreService.courses$;
+    //this.coursesStoreService.getAll().subscribe();
   }
 
   redirectToAddCourse(): void {
@@ -39,9 +45,11 @@ export class CoursesComponent implements OnInit {
     this.router.navigate([`/courses/edit/${id}`]);
   }
   onDelete(id: string): void {
-    this.coursesStoreService.deleteCourse(id);
+    this.coursesStateFacade.deleteCourse(id);
+    //this.coursesStoreService.deleteCourse(id);
   }
   onSearch(searchTerm: string): void {
-    this.coursesStoreService.filterCourses(searchTerm).subscribe();
+    this.coursesStateFacade.getFilteredCourses(searchTerm);
+    //this.coursesStoreService.filterCourses(searchTerm).subscribe();
   }
 }

@@ -82,7 +82,9 @@ export class CoursesEffects {
       ofType(CoursesActions.requestDeleteCourse),
       mergeMap((action) =>
         this.coursesService.deleteCourse(action.id).pipe(
-          map(() => CoursesActions.requestDeleteCourseSuccess()), // TODO: there is no id
+          map(() =>
+            CoursesActions.requestDeleteCourseSuccess({ id: action.id })
+          ), // TESTS: add id
           catchError((error) =>
             of(CoursesActions.requestDeleteCourseFail({ error }))
           )

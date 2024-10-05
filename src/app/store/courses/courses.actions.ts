@@ -8,7 +8,7 @@ export const requestAllCourses = createAction(
 );
 export const requestAllCoursesSuccess = createAction(
   CoursesConstants.REQUEST_ALL_COURSES_SUCCESS,
-  props<{ courses: Course[] }>()
+  props<{ courses: any }>() // TESTS: change Course[] to any
 );
 export const requestAllCoursesFail = createAction(
   CoursesConstants.REQUEST_ALL_COURSES_FAIL,
@@ -22,7 +22,7 @@ export const requestSingleCourse = createAction(
 );
 export const requestSingleCourseSuccess = createAction(
   CoursesConstants.REQUEST_SINGLE_COURSE_SUCCESS,
-  props<{ course: Course }>()
+  props<{ course: any }>() // TESTS: change Course to any
 );
 export const requestSingleCourseFail = createAction(
   CoursesConstants.REQUEST_SINGLE_COURSE_FAIL,
@@ -36,7 +36,7 @@ export const requestFilteredCourses = createAction(
 );
 export const requestFilteredCoursesSuccess = createAction(
   CoursesConstants.REQUEST_FILTERED_COURSES_SUCCESS,
-  props<{ courses: Course[] }>()
+  props<{ courses: any }>() // TESTS: change Course[] to any
 );
 export const requestFilteredCoursesFail = createAction(
   CoursesConstants.REQUEST_FILTERED_COURSES_FAIL,
@@ -49,7 +49,8 @@ export const requestDeleteCourse = createAction(
   props<{ id: string }>()
 );
 export const requestDeleteCourseSuccess = createAction(
-  CoursesConstants.REQUEST_DELETE_COURSE_SUCCESS
+  CoursesConstants.REQUEST_DELETE_COURSE_SUCCESS,
+  props<{ id: string }>() // TESTS: add id
 );
 export const requestDeleteCourseFail = createAction(
   CoursesConstants.REQUEST_DELETE_COURSE_FAIL,
@@ -59,11 +60,11 @@ export const requestDeleteCourseFail = createAction(
 // Edit course
 export const requestEditCourse = createAction(
   CoursesConstants.REQUEST_EDIT_COURSE,
-  props<{ id: string; course: CourseCreate }>()
+  props<{ id: string; course: any }>() // TESTS: change CourseCreate to any
 );
 export const requestEditCourseSuccess = createAction(
   CoursesConstants.REQUEST_EDIT_COURSE_SUCCESS,
-  props<{ course: Course }>()
+  props<{ course: any }>() // TESTS: change Course to any
 );
 export const requestEditCourseFail = createAction(
   CoursesConstants.REQUEST_EDIT_COURSE_FAIL,
@@ -73,11 +74,11 @@ export const requestEditCourseFail = createAction(
 // Create course
 export const requestCreateCourse = createAction(
   CoursesConstants.REQUEST_CREATE_COURSE,
-  props<{ course: CourseCreate }>()
+  props<{ course: any }>() // TESTS: change CourseCreate to any
 );
 export const requestCreateCourseSuccess = createAction(
   CoursesConstants.REQUEST_CREATE_COURSE_SUCCESS,
-  props<{ course: Course }>()
+  props<{ course: any }>() // TESTS: change Course to any
 );
 export const requestCreateCourseFail = createAction(
   CoursesConstants.REQUEST_CREATE_COURSE_FAIL,

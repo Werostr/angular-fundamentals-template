@@ -29,8 +29,8 @@ export class CoursesEffects {
       mergeMap(() =>
         // TODO: maybe switch to another mapping operator
         this.coursesService.getAll().pipe(
-          map(
-            (courses) => CoursesActions.requestAllCoursesSuccess({ courses }) // TESTS: remove courses.result
+          map((courses) =>
+            CoursesActions.requestAllCoursesSuccess({ courses: courses.result })
           ),
           catchError((error) =>
             of(CoursesActions.requestAllCoursesFail({ error }))
@@ -66,8 +66,8 @@ export class CoursesEffects {
       ofType(CoursesActions.requestSingleCourse),
       mergeMap((action) =>
         this.coursesService.getCourse(action.id).pipe(
-          map(
-            (course) => CoursesActions.requestSingleCourseSuccess({ course }) // TESTS: remove courses.result
+          map((course) =>
+            CoursesActions.requestSingleCourseSuccess({ course: course.result })
           ),
           catchError((error) =>
             of(CoursesActions.requestSingleCourseFail({ error }))
@@ -82,9 +82,9 @@ export class CoursesEffects {
       ofType(CoursesActions.requestDeleteCourse),
       mergeMap((action) =>
         this.coursesService.deleteCourse(action.id).pipe(
-          map(
-            () => CoursesActions.requestDeleteCourseSuccess() // TESTS: remove {id: action.id}
-          ), // TESTS: add id
+          map(() =>
+            CoursesActions.requestDeleteCourseSuccess({ id: action.id })
+          ),
           catchError((error) =>
             of(CoursesActions.requestDeleteCourseFail({ error }))
           )

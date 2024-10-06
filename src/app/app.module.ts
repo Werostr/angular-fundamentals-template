@@ -24,15 +24,15 @@ import { CoursesStateFacade } from "./store/courses/courses.facade";
     FontAwesomeModule,
     AppRoutingModule,
     HttpClientModule,
-    StoreModule.forRoot({}), // TESTS: remove reducers
-    EffectsModule.forRoot([]), // TESTS: remove effects
+    StoreModule.forRoot(reducers),
+    EffectsModule.forRoot(effects),
   ],
   providers: [
     AuthorizedGuard,
     NotAuthorizedGuard,
     CoursesService,
     CoursesStoreService,
-    //CoursesStateFacade, TESTS: remove this line
+    CoursesStateFacade,
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
     //{ provide: Window, useValue: window },
     WindowProvider,

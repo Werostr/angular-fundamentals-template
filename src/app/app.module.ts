@@ -11,7 +11,7 @@ import { AppRoutingModule } from "./app-routing.module";
 import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
 import { TokenInterceptor } from "./auth/interceptors/token.interceptor";
 import { WindowProvider } from "./auth/services/window.service";
-import { provideStore, StoreModule } from "@ngrx/store";
+import { StoreModule } from "@ngrx/store";
 import { effects, reducers } from "./store/index";
 import { EffectsModule } from "@ngrx/effects";
 import { CoursesStateFacade } from "./store/courses/courses.facade";
@@ -24,19 +24,18 @@ import { CoursesStateFacade } from "./store/courses/courses.facade";
     FontAwesomeModule,
     AppRoutingModule,
     HttpClientModule,
-    StoreModule.forRoot(reducers),
-    EffectsModule.forRoot(effects),
+    StoreModule.forRoot({}), // TESTS: remove reducers
+    EffectsModule.forRoot([]), // TESTS: remove effects
   ],
   providers: [
     AuthorizedGuard,
     NotAuthorizedGuard,
     CoursesService,
     CoursesStoreService,
-    CoursesStateFacade,
+    //CoursesStateFacade, TESTS: remove this line
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
     //{ provide: Window, useValue: window },
     WindowProvider,
-    provideStore(), // TESTS: add this
   ],
   bootstrap: [AppComponent],
 })

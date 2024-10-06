@@ -49,8 +49,8 @@ export const requestDeleteCourse = createAction(
   props<{ id: string }>()
 );
 export const requestDeleteCourseSuccess = createAction(
-  CoursesConstants.REQUEST_DELETE_COURSE_SUCCESS,
-  props<{ id: string }>() // TESTS: add id
+  CoursesConstants.REQUEST_DELETE_COURSE_SUCCESS
+  //props<{ id: string }>() // TESTS: remove this line
 );
 export const requestDeleteCourseFail = createAction(
   CoursesConstants.REQUEST_DELETE_COURSE_FAIL,

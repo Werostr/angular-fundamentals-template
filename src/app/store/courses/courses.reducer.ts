@@ -85,10 +85,11 @@ export const coursesReducer = createReducer(
     isSingleCourseLoading: true,
     errorMessage: "",
   })),
-  on(CoursesActions.requestDeleteCourseSuccess, (state, { id }) => ({
+  on(CoursesActions.requestDeleteCourseSuccess, (state) => ({
+    // TESTS: remove id
     // TESTS: add id
     ...state,
-    allCourses: state.allCourses.filter((course) => course.id !== id), // TESTS: add whole line
+    // allCourses: state.allCourses.filter((course) => course.id !== id), // TESTS: remove whole line
     isSingleCourseLoading: false,
   })),
   on(CoursesActions.requestDeleteCourseFail, (state, { error }) => ({

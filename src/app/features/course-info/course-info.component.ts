@@ -9,12 +9,12 @@ import { Course } from "@app/models/course.model";
 })
 export class CourseInfoComponent {
   // Use the names for the input `course`.
-  @Input() course!: Course;
+  @Input() course!: Course | null;
 
   constructor(private router: Router) {}
 
-  get authors(): string {
-    return this.course.authors.map((author: any) => author.name).join(", ");
+  get authors(): string | undefined {
+    return this.course?.authors.map((author: any) => author.name).join(", ");
   }
 
   redirectBack(): void {

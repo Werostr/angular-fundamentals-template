@@ -1,33 +1,27 @@
 import { Injectable } from "@angular/core";
-import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { Actions, concatLatestFrom, createEffect, ofType } from "@ngrx/effects";
 import * as CoursesActions from "./courses.actions";
-import {
-  catchError,
-  exhaustMap,
-  map,
-  mergeMap,
-  of,
-  tap,
-  withLatestFrom,
-} from "rxjs";
+import * as CoursesSelectors from "./courses.selectors";
+import { catchError, map, mergeMap, of, withLatestFrom } from "rxjs";
 import { CoursesService } from "@app/services/courses.service";
-import { CoursesStateFacade } from "./courses.facade";
+//import { CoursesStateFacade } from "./courses.facade";
 import { Router } from "@angular/router";
+import { Store } from "@ngrx/store";
+import { CoursesState } from "./courses.reducer";
 
 @Injectable()
 export class CoursesEffects {
   constructor(
+    private store: Store<CoursesState>,
     private router: Router,
     private actions$: Actions,
-    private coursesService: CoursesService,
-    private coursesStateFacade: CoursesStateFacade
+    private coursesService: CoursesService //private coursesStateFacade: CoursesStateFacade
   ) {}
 
   getAll$ = createEffect(() =>
     this.actions$.pipe(
       ofType(CoursesActions.requestAllCourses),
       mergeMap(() =>
-        // TODO: maybe switch to another mapping operator
         this.coursesService.getAll().pipe(
           map(
             (courses) => CoursesActions.requestAllCoursesSuccess({ courses }) // TESTS: remove courses.result
@@ -43,9 +37,9 @@ export class CoursesEffects {
   filteredCourses$ = createEffect(() =>
     this.actions$.pipe(
       ofType(CoursesActions.requestFilteredCourses),
-      withLatestFrom(this.coursesStateFacade.allCourses$),
+      //withLatestFrom(this.coursesStateFacade.allCourses$),
+      concatLatestFrom(() => this.store.select(CoursesSelectors.getAllCourses)),
       mergeMap(([action, allCourses]) => {
-        // TODO: what if there is no courses?
         const filteredCourses = allCourses.filter((course) =>
           course.title.includes(action.title)
         );
@@ -84,7 +78,7 @@ export class CoursesEffects {
         this.coursesService.deleteCourse(action.id).pipe(
           map(
             () => CoursesActions.requestDeleteCourseSuccess() // TESTS: remove {id: action.id}
-          ), // TESTS: add id
+          ),
           catchError((error) =>
             of(CoursesActions.requestDeleteCourseFail({ error }))
           )

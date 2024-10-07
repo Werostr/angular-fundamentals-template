@@ -38,7 +38,7 @@ export class CoursesEffects {
     this.actions$.pipe(
       ofType(CoursesActions.requestFilteredCourses),
       //withLatestFrom(this.coursesStateFacade.allCourses$),
-      concatLatestFrom(() => this.store.select(CoursesSelectors.getAllCourses)),
+      concatLatestFrom(() => this.store.select("allCourses")),
       mergeMap(([action, allCourses]) => {
         const filteredCourses = allCourses.filter((course) =>
           course.title.includes(action.title)

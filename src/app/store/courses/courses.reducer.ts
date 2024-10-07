@@ -125,7 +125,7 @@ export const coursesReducer = createReducer(
   on(CoursesActions.requestCreateCourseSuccess, (state, { course }) => ({
     ...state,
     course: course,
-    allCourses: [...state.allCourses, course],
+    allCourses: state.allCourses ? [...state.allCourses, course] : [course],
     isSingleCourseLoading: false,
   })),
   on(CoursesActions.requestCreateCourseFail, (state, { error }) => ({

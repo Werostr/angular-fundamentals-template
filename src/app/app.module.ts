@@ -24,8 +24,8 @@ import { CoursesStateFacade } from "./store/courses/courses.facade";
     FontAwesomeModule,
     AppRoutingModule,
     HttpClientModule,
-    StoreModule.forRoot({}), // TESTS: remove reducers
-    EffectsModule.forRoot([]), // TESTS: remove effects
+    StoreModule.forRoot(reducers),
+    EffectsModule.forRoot(effects),
   ],
   providers: [
     AuthorizedGuard,

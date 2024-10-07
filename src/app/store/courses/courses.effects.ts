@@ -12,10 +12,9 @@ import { CoursesState } from "./courses.reducer";
 @Injectable()
 export class CoursesEffects {
   constructor(
-    private store: Store<CoursesState>,
     private router: Router,
     private actions$: Actions,
-    private coursesService: CoursesService //private coursesStateFacade: CoursesStateFacade
+    private coursesService: CoursesService
   ) {}
 
   getAll$ = createEffect(() =>
@@ -37,20 +36,15 @@ export class CoursesEffects {
   filteredCourses$ = createEffect(() =>
     this.actions$.pipe(
       ofType(CoursesActions.requestFilteredCourses),
-      //withLatestFrom(this.coursesStateFacade.allCourses$),
-      concatLatestFrom(() => this.store.select("allCourses")),
-      mergeMap(([action, allCourses]) => {
-        const filteredCourses = allCourses.filter((course) =>
-          course.title.includes(action.title)
-        );
-        return of(
-          CoursesActions.requestFilteredCoursesSuccess({
-            courses: filteredCourses,
-          })
-        );
-      }),
-      catchError((error) =>
-        of(CoursesActions.requestFilteredCoursesFail({ error }))
+      mergeMap((action) =>
+        this.coursesService.filterCourses(action.title).pipe(
+          map((courses) =>
+            CoursesActions.requestFilteredCoursesSuccess({ courses })
+          ),
+          catchError((error) =>
+            of(CoursesActions.requestFilteredCoursesFail({ error }))
+          )
+        )
       )
     )
   );
